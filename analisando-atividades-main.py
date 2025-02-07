@@ -86,28 +86,36 @@ def detect_activity(video_path, output_path):
         # y: 0.447289497 → Representa a coordenada vertical do ponto detectado, normalizada em relação à altura da imagem (0 = topo, 1 = base).
         # z: -1.13765788 → Indica a profundidade do ponto em relação à câmera. Valores negativos indicam que o ponto está mais próximo da câmera.
         # visibility: 0.999392927 → Representa a confiança do modelo de que esse ponto foi detectado corretamente. Um valor próximo de 1 significa alta certeza.
-        
-        if(left_ankle.visibility < 0.2 and right_ankle.visibility < 0.2): #Tornozelos não visíveis
-            if(left_elbow.visibility < 0.2 and right_elbow.visibility < 0.2):
+        if(left_ankle.visibility < 0.3 and right_ankle.visibility < 0.3): #Tornozelos não visíveis
+            if(left_elbow.visibility < 0.4 and right_elbow.visibility < 0.4):
+                if((left_wrist.visibility > 0.5 and is_hand_near_face(left_wrist, nose) and right_wrist.y < right_shoulder.y) or
+                   (right_wrist.visibility > 0.5 and is_hand_near_face(right_wrist, nose) and left_wrist.y < left_shoulder.y)):
+                    return "Mao no rosto"
                 return "Atividade desconhecida 1"
             else:
-                if is_hand_near_face(left_wrist, nose) or is_hand_near_face(right_wrist, nose):
+                if((left_wrist.visibility > 0.5 and is_hand_near_face(left_wrist, nose) and right_wrist.y < right_shoulder.y) or
+                   (right_wrist.visibility > 0.5 and is_hand_near_face(right_wrist, nose) and left_wrist.y < left_shoulder.y)):
                     return "Mao no rosto"
                 elif(abs(left_shoulder.y - right_shoulder.y) > 0.6): #Ombros um acima do outro na horaizontal
+                    if((left_wrist.visibility > 0.5 and is_hand_near_face(left_wrist, nose)) or
+                        (right_wrist.visibility > 0.5 and is_hand_near_face(right_wrist, nose))):
+                        return "Mao no rosto"
                     return "Deitado"
                 elif((left_wrist.visibility > 0.5 and 45 <left_arm_angle < 130) or
                        (right_wrist.visibility > 0.5 and 45 < right_arm_angle < 130)): #Braços flexionados
-                    if((right_wrist.visibility > 0.3 and abs(right_wrist.y - nose.y) < 0.3) or 
-                        (left_wrist.visibility and abs(left_wrist.y - nose.y) < 0.3)): # Pulsos acima do nariz
+                    if((right_wrist.visibility > 0.3 and abs(right_wrist.y - nose.y) < 0.3 and right_wrist.y < right_shoulder.y) or 
+                        (left_wrist.visibility and abs(left_wrist.y - nose.y) < 0.3) and left_wrist.y < left_shoulder.y): # Pulsos acima do nariz
                         return "Acenando"   
                     else:
                         return "Escrevendo ou Teclando"
-                elif(right_elbow.visibility > 0.5 or left_elbow.visibility > 0.5): #Braços visiveis
-                    if((right_elbow.visibility > 0.5 and abs(right_elbow.y - right_shoulder.y) < 0.3) or
-                        (left_elbow.visibility > 0.5 and abs(left_elbow.y - left_shoulder.y) < 0.3)): # Pulsos acima do ombro
+                elif((right_elbow.visibility > 0.5 and abs(right_elbow.y - right_shoulder.y) < 0.3) or
+                      (left_elbow.visibility > 0.5 and abs(left_elbow.y - left_shoulder.y) < 0.3)): #Braços visiveis
+                    if(abs(right_elbow.z - right_shoulder.z) > 0.2 or abs(left_elbow.z - left_shoulder.z) > 0.2):
                         return "Braco aberto"
                     else:
                         return "Parado"
+                elif(right_elbow.visibility > 0.4 or left_elbow.visibility > 0.4): #Braços visiveis
+                    return "Parado"
                 else:
                     return "Atividade desconhecida 3"
         else: #Tornozelos possivelmente visíveis
@@ -154,7 +162,7 @@ def detect_activity(video_path, output_path):
         cv2.imshow('Video', frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-        time.sleep(0.02)
+        # time.sleep(0.05)
 
     # Liberar a captura de vídeo e fechar todas as janelas
     cap.release()
