@@ -28,7 +28,7 @@ pip install opencv-python mediapipe deepface tqdm numpy
 Coloque um vídeo chamado `input_video.mp4` na mesma pasta do script e rode:
 
 ```bash
-python analisando_video.py
+python video-analysis3.py
 ```
 
 ---
