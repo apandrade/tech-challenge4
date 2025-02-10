@@ -15,6 +15,17 @@ mp_drawing = mp.solutions.drawing_utils
 POSE_DIFFERENCE_THRESHOLD = 0.05
 HAND_NEAR_FACE_THRESHOLD = 0.36
 
+count_mao_no_rosto = 0
+count_deitado = 0
+count_acenando = 0
+count_escrevendo_ou_teclando = 0
+count_braco_aberto = 0
+count_parado = 0
+count_atividade_desconhecida = 0
+count_caminhando = 0
+count_sentado = 0
+count_em_pe = 0
+
 # Funções auxiliares
 
 def calculate_pose_difference(pose1, pose2):
@@ -88,48 +99,74 @@ def determine_activity(landmarks):
     right_leg_angle = calculate_angle(right_hip, right_knee, right_ankle)
 
     nose = landmarks[mp_pose.PoseLandmark.NOSE.value]
-    
+
+    global count_mao_no_rosto
+    global count_deitado
+    global count_acenando
+    global count_escrevendo_ou_teclando
+    global count_braco_aberto
+    global count_parado
+    global count_atividade_desconhecida
+    global count_caminhando
+    global count_sentado
+    global count_em_pe
+        
     if(left_ankle.visibility < 0.3 and right_ankle.visibility < 0.3):
         if(left_elbow.visibility < 0.4 and right_elbow.visibility < 0.4):
             if((left_wrist.visibility > 0.5 and is_hand_near_face(left_wrist, nose) and right_wrist.y < right_shoulder.y) or
                (right_wrist.visibility > 0.5 and is_hand_near_face(right_wrist, nose) and left_wrist.y < left_shoulder.y)):
+                count_mao_no_rosto +=1
                 return "Mao no rosto"
+            count_atividade_desconhecida +=1
             return "Atividade desconhecida 1"
         else:
             if((left_wrist.visibility > 0.5 and is_hand_near_face(left_wrist, nose) and right_wrist.y < right_shoulder.y) or
                (right_wrist.visibility > 0.5 and is_hand_near_face(right_wrist, nose) and left_wrist.y < left_shoulder.y)):
+                count_mao_no_rosto +=1
                 return "Mao no rosto"
             elif(abs(left_shoulder.y - right_shoulder.y) > 0.6):
                 if((left_wrist.visibility > 0.5 and is_hand_near_face(left_wrist, nose)) or
                    (right_wrist.visibility > 0.5 and is_hand_near_face(right_wrist, nose))):
+                    count_mao_no_rosto +=1
                     return "Mao no rosto"
+                count_deitado +=1
                 return "Deitado"
             elif((left_wrist.visibility > 0.5 and 45 <left_arm_angle < 130) or
                 (right_wrist.visibility > 0.5 and 45 < right_arm_angle < 130)):
                 if((right_wrist.visibility > 0.3 and abs(right_wrist.y - nose.y) < 0.3 and right_wrist.y < right_shoulder.y) or 
                     (left_wrist.visibility and abs(left_wrist.y - nose.y) < 0.3) and left_wrist.y < left_shoulder.y):
+                    count_acenando +=1
                     return "Acenando"  
                 else:
+                    count_escrevendo_ou_teclando +=1
                     return "Escrevendo ou Teclando"
             elif((right_elbow.visibility > 0.5 and abs(right_elbow.y - right_shoulder.y) < 0.3) or
                 (left_elbow.visibility > 0.5 and abs(left_elbow.y - left_shoulder.y) < 0.3)):
                 if(abs(right_elbow.z - right_shoulder.z) > 0.2 or abs(left_elbow.z - left_shoulder.z) > 0.2):
+                    count_braco_aberto +=1
                     return "Braco aberto"
                 else:
+                    count_parado +=1
                     return "Parado"
             elif(right_elbow.visibility > 0.4 or left_elbow.visibility > 0.4):
+                count_parado +=1
                 return "Parado"
             else:
+                count_atividade_desconhecida +=1
                 return "Atividade desconhecida 3"
     else:
         if(left_leg_angle > 150 and right_leg_angle > 150):
             if(abs(left_leg_angle - right_leg_angle) > 1):
+                count_caminhando +=1
                 return "Caminhando"
             else:
+                count_em_pe +=1
                 return "Em pe"
         else:
             if(abs(left_shoulder.y - right_shoulder.y) > 0.6):
+                count_deitado +=1
                 return "Deitado"
+            count_sentado +=1
             return "Sentado"
 
 
@@ -189,6 +226,17 @@ def process_video(video_path, output_path, report_path):
         report_file.write("Emoções detectadas:\n")
         for emotion, count in activities_summary["emotions"].items():
             report_file.write(f"  {emotion}: {count} vezes\n")
+        report_file.write("\nAtividades detectadas\n")
+        report_file.write(f"\t-Escrevendo ou teclando: {count_escrevendo_ou_teclando} vezes\n")
+        report_file.write(f"\t-Acenando: {count_acenando} vezes\n")
+        report_file.write(f"\t-Braco aberto: {count_braco_aberto} vezes\n")
+        report_file.write(f"\t-Caminhando: {count_caminhando} vezes\n")
+        report_file.write(f"\t-Deitado: {count_deitado} vezes\n")
+        report_file.write(f"\t-Em pe: {count_em_pe} vezes\n")
+        report_file.write(f"\t-Mao no rosto: {count_mao_no_rosto} vezes\n")
+        report_file.write(f"\t-Parado: {count_parado} vezes\n")
+        report_file.write(f"\t-Sentado: {count_sentado} vezes\n")
+        report_file.write(f"\t-Atividade desconhecida: {count_atividade_desconhecida} vezes\n")
         report_file.write("\nFrames com anomalias:\n")
         report_file.write(", ".join(map(str, anomalies)))
 
