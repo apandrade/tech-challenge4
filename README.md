@@ -17,18 +17,14 @@ Este projeto realiza **análise de vídeo** utilizando **Visão Computacional e 
 
 ### 1️⃣ Instale as dependências
 
-Antes de rodar o código, instale as bibliotecas necessárias:
-
-```bash
-pip install opencv-python mediapipe deepface tqdm numpy
-```
+Antes de rodar o código, instale as bibliotecas necessárias, contidas no arquivo `requirements.txt`:
 
 ### 2️⃣ Execute o script principal
 
 Coloque um vídeo chamado `input_video.mp4` na mesma pasta do script e rode:
 
 ```bash
-python video-analysis3.py
+python analisando-video.py
 ```
 
 ---
@@ -125,6 +121,6 @@ Frames com anomalias:
 
 ## 🤖 Melhorias Futuras
 
-- Adicionar detecção de **ações específicas** como "andar", "correr", "sentar-se".  
+- Melhorar detecção e avaliação. 
 - Melhorar a precisão da **detecção de anomalias** ajustando os **limiares de diferença**.  
 - Implementar suporte para **detecção de múltiplas pessoas** no mesmo vídeo.  
