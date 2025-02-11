@@ -14,15 +14,17 @@ Github: https://github.com/apandrade/tech-challenge4
 
 # Análise de Vídeo com Detecção de Pose e Emoções
 
-Este projeto realiza **análise de vídeo** utilizando **Visão Computacional e Aprendizado de Máquina** para identificar poses humanas, detectar emoções e relatar anomalias nos movimentos.  
+Este projeto foi desenvolvido em Python e utiliza duas bibliotecas principais: MediaPipe, para detecção de pose e landmarks corporais, e DeepFace, para análise de emoções. O objetivo é analisar um vídeo de entrada, detectar movimentos e emoções, e gerar um relatório com os resultados.  
+
+O projeto processa vídeos frame a frame, detectando landmarks corporais (como ombros, cotovelos, pulsos, quadris, joelhos e tornozelos) e emoções faciais. Com base nesses dados, o sistema classifica atividades e identifica anomalias, gerando um relatório final com os resultados.
 
 ## 🛠️ Funcionalidades
 
-- **Detecção de pose humana** usando **MediaPipe**  
-- **Identificação de atividades** baseadas na posição do corpo  
+- **Detecção de Pose:** Utiliza o MediaPipe para identificar landmarks corporais.  
+- **Identificação de atividades:** Classifica movimentos com base na posição dos landmarks.  
 - **Detecção de emoções faciais** utilizando **DeepFace**  
 - **Registro de anomalias nos movimentos**  
-- **Geração de relatório** com estatísticas da análise  
+- **Geração de relatório** Gera um relatório detalhado com anomalias detectadas, emoções predominantes, atividades e anômalias.  
 - **Processamento de vídeo** e salvamento de saída anotada  
 
 ---
@@ -114,10 +116,25 @@ O código faz uso das seguintes bibliotecas:
 ### 🎥 Processamento de Vídeo
 
 - **`process_video(video_path, output_path, report_path)`**  
-  → Função principal que executa todo o pipeline de processamento. Lê o vídeo de entrada, analisa cada frame, salva um novo vídeo com as anotações e gera um relatório.
+  → Função principal que executa todo o pipeline de processamento. O vídeo é processado frame a frame. Para cada frame, os landmarks corporais são detectados, as diferenças de pose são calculadas, e a atividade é classificada. As emoções detectadas são desenhadas no frame, e as anomalias são registradas para gerar um relatório final.
   
   Entrada: Caminho do vídeo de entrada, caminho do vídeo de saída e caminho do relatório.  
   Saída: Vídeo processado e relatório de análise.
+
+
+## Destaques do Algoritmo
+### Visibilidade dos Landmarks
+Se um landmark não estiver visível, ele não é considerado na análise. Por exemplo, se os tornozelos não estiverem visíveis, a pessoa provavelmente está sentada ou deitada.
+
+### Distância entre os Landmarks
+A distância entre os landmarks ajuda a inferir movimentos. Por exemplo, se o pulso está longe da cintura, é provável que o braço esteja aberto.
+
+### Observação das Posições
+A posição relativa dos landmarks é crucial. Se o pulso está acima do ombro, a pessoa pode estar acenando ou levantando a mão.
+
+### Heurística dos Ângulos
+Os ângulos entre os landmarks permitem classificar movimentos mais complexos. Por exemplo, um ângulo grande entre o quadril, joelho e tornozelo indica que a pessoa está em pé ou caminhando.
+
 
 ### 📊 Relatório Gerado
 
@@ -166,8 +183,12 @@ Frames com anomalias:
 
 ---
 
+## 🌟 Considerações Finais
+Este projeto demonstra como técnicas de visão computacional podem ser usadas para analisar movimentos e emoções humanas de forma automatizada.  
+Futuramente, podemos expandir o projeto para incluir mais atividades, melhorar a precisão da detecção e fazer integrações com APIs externa para disponibilizar o serviço na internet.
+
 ## 🤖 Melhorias Futuras
 
-- Melhorar detecção e avaliação. 
+- Melhorar detecção e implementar novas atividades no algorítimo. 
 - Melhorar a precisão da **detecção de anomalias** ajustando os **limiares de diferença**.  
-- Implementar suporte para **detecção de múltiplas pessoas** no mesmo vídeo.  
+- Implementar suporte para **detecção de múltiplas pessoas** no mesmo vídeo.
