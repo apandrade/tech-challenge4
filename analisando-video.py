@@ -25,6 +25,7 @@ count_atividade_desconhecida = 0
 count_caminhando = 0
 count_sentado = 0
 count_em_pe = 0
+count_emotions = {}
 
 # Funções auxiliares
 
@@ -55,9 +56,17 @@ def detect_emotions(frame):
     return result
 
 def draw_emotions(frame, emotions):
+    global count_emotions
+
     for face in emotions:
         x, y, w, h = face['region']['x'], face['region']['y'], face['region']['w'], face['region']['h']
         dominant_emotion = face['dominant_emotion']
+        
+        if dominant_emotion in count_emotions:
+            count_emotions[dominant_emotion] += 1
+        else:
+            count_emotions[dominant_emotion] = 1
+
         cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
         cv2.putText(frame, dominant_emotion, (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
 
@@ -224,8 +233,8 @@ def process_video(video_path, output_path, report_path):
         report_file.write(f"Total de frames analisados: {total_frames}\n")
         report_file.write(f"Número de anomalias detectadas: {len(anomalies)}\n")
         report_file.write("Emoções detectadas:\n")
-        for emotion, count in activities_summary["emotions"].items():
-            report_file.write(f"  {emotion}: {count} vezes\n")
+        for emotion, count in count_emotions.items():
+            report_file.write(f"\t-{emotion}: {count} vezes\n")
         report_file.write("\nAtividades detectadas\n")
         report_file.write(f"\t-Escrevendo ou teclando: {count_escrevendo_ou_teclando} vezes\n")
         report_file.write(f"\t-Acenando: {count_acenando} vezes\n")
