@@ -158,17 +158,24 @@ Resumo da Análise do Vídeo
 Total de frames analisados: 3326
 Número de anomalias detectadas: 1043
 Emoções detectadas:
+	-sad: 874 vezes
+	-fear: 417 vezes
+	-happy: 1055 vezes
+	-angry: 120 vezes
+	-neutral: 834 vezes
+	-surprise: 116 vezes
+	-disgust: 1 vezes
 Atividades detectadas
-    -Escrevendo ou teclando: 386 vezes
-    -Acenando: 23 vezes
-    -Braco aberto: 119 vezes
-    -Caminhando: 82 vezes
-    -Deitado: 96 vezes
-    -Em pe: 9 vezes
-    -Mao no rosto: 235 vezes
-    -Parado: 621 vezes
-    -Sentado: 649 vezes
-    -Atividade desconhecida: 493 vezes
+  -Escrevendo ou teclando: 386 vezes
+  -Acenando: 23 vezes
+  -Braco aberto: 119 vezes
+  -Caminhando: 82 vezes
+  -Deitado: 96 vezes
+  -Em pe: 9 vezes
+  -Mao no rosto: 235 vezes
+  -Parado: 621 vezes
+  -Sentado: 649 vezes
+  -Atividade desconhecida: 493 vezes
 
 Frames com anomalias:
 5, 8, 9, 11, 12, 15, 16, 17, 21, 23, 30, 34, 38, 39, 40...
