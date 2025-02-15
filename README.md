@@ -8,7 +8,7 @@
 - Michael dos Santos Silva(RM357009) - michael.shel96@gmail.com
 - Sonival dos Santos(RM356905) - sonival.santos@gmail.com
 
-Video(Youtube): 
+Video(Youtube): https://youtu.be/fFAfOxIVIys?si=jWSriJLiemTKLL_B
 
 Github: https://github.com/apandrade/tech-challenge4
 
